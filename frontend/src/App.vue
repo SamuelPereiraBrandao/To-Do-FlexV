@@ -1,30 +1,49 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { ref, onMounted, defineAsyncComponent, defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'App',
+  setup() {
+    const TodoThematic = defineAsyncComponent(() => import('./components/TodoThematic.vue'))
+    const AuthLayout = defineAsyncComponent(() => import('./components/AuthLayout.vue'))
+    const Login = defineAsyncComponent(() => import('./components/Login.vue'))
+
+    const authUser = ref<Record<string, any> | null>(null)
+
+    const loadAuth = () => {
+      try {
+        const raw = localStorage.getItem('authUser')
+        authUser.value = raw ? JSON.parse(raw) : null
+      } catch {
+        authUser.value = null
+      }
+    }
+
+    onMounted(() => {
+      loadAuth()
+      window.addEventListener('auth-changed', loadAuth)
+      window.addEventListener('storage', loadAuth)
+    })
+
+    // ✅ Retorne os componentes explicitamente para o template enxergar
+    return {
+      authUser,
+      AuthLayout,
+      TodoThematic,
+      Login,
+    }
+  },
+})
 </script>
 
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
-</template>
+    <component v-if="authUser" :is="AuthLayout">
+      <template #default>
+        <TodoThematic />
+      </template>
+    </component>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+    <component v-else :is="Login" />
+  </div>
+</template>
