@@ -1,13 +1,29 @@
+<template>
+  <v-app>
+  <div class="min-h-screen flex items-center justify-center bg-flexvpadrao-neutra1 dark:bg-flexvpadrao-neutro5/50 transition-colors duration-300">
+    <div class="fixed top-4 right-4 z-50">
+      <DarkModeToggle />
+    </div>
+
+    <component v-if="authUser" :is="AuthLayout" />
+
+    <component v-else :is="Login" />
+  </div>
+  </v-app>
+</template>
+
 <script lang="ts">
 import { ref, onMounted, defineAsyncComponent, defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'App',
+  components: {
+    DarkModeToggle: defineAsyncComponent(() => import('./components/DarkModeToggle.vue')),
+  },
   setup() {
     const TodoThematic = defineAsyncComponent(() => import('./components/TodoThematic.vue'))
     const AuthLayout = defineAsyncComponent(() => import('./components/AuthLayout.vue'))
     const Login = defineAsyncComponent(() => import('./components/Login.vue'))
-    const DarkModeToggle = defineAsyncComponent(() => import('./components/DarkModeToggle.vue'))
 
     const authUser = ref<Record<string, any> | null>(null)
 
@@ -24,28 +40,9 @@ export default defineComponent({
       loadAuth()
       window.addEventListener('auth-changed', loadAuth)
       window.addEventListener('storage', loadAuth)
-      // Tema inicial já aplicado em index.html
     })
 
-    return { authUser, AuthLayout, TodoThematic, Login, DarkModeToggle }
+    return { authUser, AuthLayout, TodoThematic, Login }
   },
 })
 </script>
-
-<template>
-  <div class="min-h-screen flex items-center justify-center bg-flexvpadrao-neutra1 dark:bg-flexvpadrao-neutro5 transition-colors duration-300">
-    <div class="fixed top-4 right-4 z-50">
-      <DarkModeToggle />
-    </div>
-
-    <component v-if="authUser" :is="AuthLayout">
-      <template #default>
-        <TodoThematic />
-      </template>
-    </component>
-
-    <component v-else :is="Login" />
-  </div>
-  
-</template>
-

@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* Import only Tailwind theme vars + utilities (no preflight) */
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 
 /* Enable class-based dark variant for Tailwind v4 */
 @custom-variant dark (&:where(.dark, .dark *));
