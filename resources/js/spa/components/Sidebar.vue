@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <v-navigation-drawer
     rail
     expand-on-hover
     permanent
     location="left"
     width="260"
-    class="!bg-flexvpadrao-neutra2 dark:!bg-flexvpadrao-neutro5/60 !border-none"
+    class="!bg-flexvpadrao-500 dark:!bg-flexvpadrao-vuetify-dark border-2  border-red-700"
   >
     <div class="px-1 py-4">
       <div class="flex items-center gap-3 mb-4">
@@ -29,35 +29,47 @@
         <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" @click="$emit('navigate','dashboard')" />
         <v-list-item prepend-icon="mdi-format-list-checks" title="To‑Do Temático" @click="$emit('navigate','todo')" />
         <v-list-item prepend-icon="mdi-cog" title="Configurações" @click="$emit('navigate','settings')" />
-      </v-list>
+        <v-list-item prepend-icon="mdi-account" title="Perfil" @click="$emit('navigate','profile')" />    </v-list>
     </div>
 
     <template #append>
       <div class="p-3">
-        <v-btn block variant="text" color="error" @click="logout">Sair</v-btn>
+        <v-btn block class='border' variant="text" color="error" @click="logout">Sair</v-btn>
       </div>
     </template>
   </v-navigation-drawer>
 </template>
 
-<script setup lang="ts">
-import { computed, ref } from 'vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-const props = defineProps<{ user: Record<string, any> }>()
-
-const initials = computed(() =>
-  (props.user?.name || '')
-    .split(' ')
-    .map(s => s[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-)
-
-const logout = () => {
-  localStorage.removeItem('authUser')
-  window.dispatchEvent(new CustomEvent('auth-changed'))
-}
-
-// sem upload aqui
+export default defineComponent({
+  name: 'Sidebar',
+  props: {
+    user: { type: Object as () => Record<string, any>, required: true },
+  },
+  emits: ['navigate'],
+  computed: {
+    initials(): string {
+      const n = (this.user?.name || '') as string
+      return n
+        .split(' ')
+        .map((s) => s[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    },
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('authUser')
+      window.dispatchEvent(new CustomEvent('auth-changed'))
+    },
+  },
+})
 </script>
+
+
+
+
+

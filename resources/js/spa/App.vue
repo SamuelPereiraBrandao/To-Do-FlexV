@@ -1,6 +1,6 @@
 <template>
   <v-app>
-  <div class="min-h-screen flex items-center justify-center bg-flexvpadrao-neutra1 dark:bg-flexvpadrao-neutro5/50 transition-colors duration-300">
+  <div class="min-h-screen flex bg-flexvpadrao-neutra1 dark:bg-flexvpadrao-neutro5/10 transition-colors duration-300">
     <div class="fixed top-4 right-4 z-50">
       <DarkModeToggle />
     </div>

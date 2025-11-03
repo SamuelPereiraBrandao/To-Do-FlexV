@@ -1,0 +1,137 @@
+{
+  "info": {
+    "name": "To-Do Samuel API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "6f1b8b5c-4e2c-4a9e-9b7c-tds-collection"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" },
+    { "key": "user_id", "value": "1" },
+    { "key": "todo_id", "value": "1" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [ { "key": "token", "value": "{{token}}", "type": "string" } ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{base_url}}/api/register", "host": [ "{{base_url}}" ], "path": [ "api", "register" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Samuel\",\n  \"email\": \"samuel@example.com\",\n  \"password\": \"123456\",\n  \"device_name\": \"web\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {}; try { json = pm.response.json(); } catch(e){}",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }",
+                  "if (json.user && json.user.id) { pm.collectionVariables.set('user_id', json.user.id); }",
+                  "pm.test('Token salvo', function () { pm.expect(pm.collectionVariables.get('token')).to.be.a('string'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (token)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{base_url}}/api/login", "host": [ "{{base_url}}" ], "path": [ "api", "login" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"samuel@example.com\",\n  \"password\": \"123456\",\n  \"device_name\": \"web\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": [
+                "let json = {}; try { json = pm.response.json(); } catch(e){}",
+                "if (json.token) { pm.collectionVariables.set('token', json.token); }",
+                "if (json.user && json.user.id) { pm.collectionVariables.set('user_id', json.user.id); }",
+                "pm.test('Token salvo', function () { pm.expect(pm.collectionVariables.get('token')).to.be.a('string'); });"
+              ] }
+            }
+          ]
+        },
+        {
+          "name": "Login (access_token)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": [ "{{base_url}}" ], "path": [ "api", "auth", "login" ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"samuel@example.com\",\n  \"password\": \"123456\",\n  \"device_name\": \"web\"\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "let j={};try{j=pm.response.json()}catch(e){}",
+              "if (j.access_token) pm.collectionVariables.set('token', j.access_token);",
+              "if (j.user && j.user.id) pm.collectionVariables.set('user_id', j.user.id);",
+              "pm.test('Token salvo', function(){ pm.expect(pm.collectionVariables.get('token')).to.be.a('string') })"
+            ] } }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{base_url}}/api/logout", "host": [ "{{base_url}}" ], "path": [ "api", "logout" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Perfil",
+      "item": [
+        { "name": "Me", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw": "{{base_url}}/api/me", "host": ["{{base_url}}"], "path":["api","me"] } } },
+        { "name": "Atualizar Perfil", "request": { "method": "PUT", "header": [ {"key":"Content-Type","value":"application/json"},{"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/profile", "host":["{{base_url}}"], "path":["api","profile"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Samuel P.\",\n  \"email\": \"samuel@example.com\"\n}"} } },
+        { "name": "Upload Avatar", "request": { "method": "POST", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/profile/avatar", "host":["{{base_url}}"], "path":["api","profile","avatar"] }, "body": { "mode":"formdata", "formdata": [ {"key":"avatar","type":"file","src":""} ] } } },
+        { "name": "Remover Avatar", "request": { "method": "DELETE", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/profile/avatar", "host":["{{base_url}}"], "path":["api","profile","avatar"] } } }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        { "name": "Listar Usuários", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/users?search=", "host":["{{base_url}}"], "path":["api","users"], "query":[{"key":"search","value":""}] } } },
+        { "name": "Ver Usuário", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/users/{{user_id}}", "host":["{{base_url}}"], "path":["api","users","{{user_id}}"] } } },
+        { "name": "Atualizar Role (admin)", "request": { "method": "PATCH", "header": [ {"key":"Content-Type","value":"application/json"},{"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/users/{{user_id}}/role", "host":["{{base_url}}"], "path":["api","users","{{user_id}}","role"] }, "body": {"mode":"raw","raw":"{\n  \"role\": \"admin\"\n}"} } }
+      ]
+    },
+    {
+      "name": "Todos",
+      "item": [
+        { "name": "Listar Todos", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos?theme_id=&done=&tag=&user_id=&assignee_id=", "host":["{{base_url}}"], "path":["api","todos"], "query":[ {"key":"theme_id","value":""},{"key":"done","value":""},{"key":"tag","value":""},{"key":"user_id","value":""},{"key":"assignee_id","value":""} ] } } },
+        { "name": "Criar Todo", "request": { "method": "POST", "header": [ {"key":"Content-Type","value":"application/json"},{"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos", "host":["{{base_url}}"], "path":["api","todos"] }, "body": {"mode":"raw","raw":"{\n  \"title\": \"Comprar café\",\n  \"description\": \"Filtro e pó\",\n  \"theme_id\": \"personal\",\n  \"done\": false,\n  \"is_public\": false,\n  \"due_at\": \"2025-12-31\",\n  \"assignee_id\": null,\n  \"tags\": [\"mercado\", \"casa\"]\n}"} } },
+        { "name": "Ver Todo", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}"] } } },
+        { "name": "Atualizar Todo", "request": { "method": "PUT", "header": [ {"key":"Content-Type","value":"application/json"},{"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}"] }, "body": {"mode":"raw","raw":"{\n  \"title\": \"Comprar café e filtro\",\n  \"description\": \"Filtro nº 102\",\n  \"done\": true,\n  \"is_public\": true,\n  \"due_at\": null,\n  \"tags\": [\"mercado\", \"casa\"]\n}"} } },
+        { "name": "Excluir Todo", "request": { "method": "DELETE", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Histórico & Comentários",
+      "item": [
+        { "name": "Histórico do Todo", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}/history", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}","history"] } } },
+        { "name": "Listar Comentários", "request": { "method": "GET", "header": [ {"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}/comments", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}","comments"] } } },
+        { "name": "Comentar", "request": { "method": "POST", "header": [ {"key":"Content-Type","value":"application/json"},{"key":"Accept","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"} ], "url": { "raw":"{{base_url}}/api/todos/{{todo_id}}/comments", "host":["{{base_url}}"], "path":["api","todos","{{todo_id}}","comments"] }, "body": {"mode":"raw","raw":"{\n  \"body\": \"Comentário de teste\"\n}"} } }
+      ]
+    }
+  ]
+}
+

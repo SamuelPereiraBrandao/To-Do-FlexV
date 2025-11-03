@@ -43,6 +43,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'role' => $user->role ?? 'user',
                 'avatar_url' => $user->avatar_path ? url("storage/{$user->avatar_path}") : null,
             ],
         ]);
@@ -71,6 +72,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'role' => $user->role ?? 'user',
                 'avatar_url' => $user->avatar_path ? url("storage/{$user->avatar_path}") : null,
             ],
         ]);
@@ -105,6 +107,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'role' => $user->role ?? 'user',
                 'avatar_url' => null,
             ],
         ], 201);
