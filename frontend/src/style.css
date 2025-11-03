@@ -1,89 +1,82 @@
+@import "tailwindcss";
+
+/* Enable class-based dark variant for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Improve native controls and default schemes */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  /* Default to a clean light theme */
-  color: #0f172a;
-  /* slate-900 */
-  background-color: #f8fafc;
-  /* gray-50 */
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+.dark {
+  color-scheme: dark;
 }
 
-a:hover {
-  color: #535bf2;
-}
+@theme {
+  /* === Paleta flexv === */
+  --color-flexv-100: #202123;
+  --color-flexv-200: #181822;
+  --color-flexv-300: #16A34A;
+  --color-flexv-400: #7D7E7F;
+  --color-flexv-500: #ffffff;
+  --color-flexv-600: #004e72;
+  --color-flexv-700: #148faa;
+  --color-flexv-800: #b32122;
+  --color-flexv-900: #202123;
+  --color-flexv-1000: #adc1c8;
+  --color-flexv-1500: #343541;
+  --color-flexv-1600: #d20319;
+  --color-flexv-modal: #5a6173;
+  --color-flexv-modal-dark: #e0e5f2;
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  /* === Paleta  === */
+  --color-flexvpadrao-primaria5: #003F59;
+  --color-flexvpadrao-primaria3-hover: #0878A6;
+  --color-flexvpadrao-primaria4: #00668f;
+  --color-flexvpadrao-primaria3: #019ad8;
+  --color-flexvpadrao-neutra1: #f4f6fa;
+  --color-flexvpadrao-neutra2: #e6eaf5;
+  --color-flexvpadrao-neutro3: #445275;
+  --color-flexvpadrao-primaria1: #bdecff;
+  --color-flexvpadrao-variacao2: #b6c2e2;
+  --color-flexvpadrao-neutro4: #333e5a;
+  --color-flexvpadrao-neutro5: #11151f;
+  --color-flexvpadrao-errotext: #d20319;
+  --color-flexvpadrao-errotext-darken: #9C0010;
+  --color-flexvpadrao-erroshape: #FFE5E8;
+  --color-flexvpadrao-sucessoshape: #0d823c;
+  --color-flexvpadrao-sucessoneutro: #D8F7E6;
+  --color-flexvpadrao-sucessoshapehover: #00692a;
+  --color-flexvpadrao-base: #fbfbfd;
+  --color-flexvpadrao-2000: #f5bb3f;
+  --color-flexvpadrao-marcacao-comum: #00c1eb;
+  --color-flexvpadrao-marcacao-comum-dark: #09D1EB;
+  --color-flexvpadrao-marcacao-comum-text: #ccf0fe;
+  --color-flexvpadrao-marcacao-convenio: #019ad8;
+  --color-flexvpadrao-marcacao-convenio-text: #CCF1FF;
+  --color-flexvpadrao-marcacao-fundo: #11568c;
+  --color-flexvpadrao-marcacao-fundo-dark: #00EBEA;
+  --color-flexvpadrao-marcacao-fundo-text: #CEF0FE;
+  --color-flexvpadrao-informacao: #EDF5FF;
+  --color-flexvpadrao-icone-informacao: #0344CE;
+  --color-flexvpadrao-alerta: #FFF9E1;
+  --color-flexvpadrao-icone-alerta: #F2C21B;
+  --color-flexvpadrao-sucesso: #DEFBE6;
+  --color-flexvpadrao-icone-sucesso: #28A34B;
+  --color-flexvpadrao-error: #FFF1F1;
+  --color-flexvpadrao-icone-error: #DA1B25;
+  --color-flexvpadrao-vuetify-dark: #212121;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+  /* === Sombras personalizadas === */
+  --shadow-flexv: 0 5px 20px rgba(8, 120, 166, 0.68);
+  --shadow-flexv-2000: 0 5px 20px rgba(245, 187, 63, 0.68);
+  --shadow-flexv-white: 0 5px 20px rgba(255, 255, 255, 0.68);
+  --shadow-flexv-error: 0 5px 20px rgba(156, 0, 16, 0.68);
+  --shadow-flexv-green: 0 5px 20px rgba(40, 163, 75, 0.68);
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f3f4f6;
-  color: #0f172a;
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.15s;
-}
-
-button:hover {
-  border-color: #c7d2fe;
-  background-color: #eef2ff;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #0f172a;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+  /* === Outras configs === */
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --darkmode: class;
 }
