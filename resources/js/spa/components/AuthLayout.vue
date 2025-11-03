@@ -25,10 +25,18 @@ const refresh = () => (user.value = JSON.parse(localStorage.getItem('authUser') 
 onMounted(() => {
   window.addEventListener('auth-changed', refresh)
   window.addEventListener('storage', refresh)
+  window.addEventListener('go-profile', (e: any) => {
+    try {
+      const id = e?.detail?.id ?? e?.detail
+      if (id) localStorage.setItem('profileUserId', String(id))
+    } catch {}
+    currentPage.value = 'profile'
+  })
 })
 onBeforeUnmount(() => {
   window.removeEventListener('auth-changed', refresh)
   window.removeEventListener('storage', refresh)
+  window.removeEventListener('go-profile', () => {})
 })
 
 const onNavigate = (page: string) => {

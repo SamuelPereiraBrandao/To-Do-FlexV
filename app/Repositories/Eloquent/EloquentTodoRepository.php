@@ -10,7 +10,7 @@ class EloquentTodoRepository implements TodoRepositoryInterface
 {
     public function paginateForUser(int $userId, array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        $q = Todo::query()->with(['tags', 'assignee:id,name,email'])
+        $q = Todo::query()->with(['tags', 'assignee:id,name,email', 'creator:id,name,email'])
             ->where(function ($qq) use ($userId) {
                 $qq->where('user_id', $userId)->orWhere('assignee_id', $userId);
             });
@@ -20,7 +20,7 @@ class EloquentTodoRepository implements TodoRepositoryInterface
 
     public function paginateForAdmin(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        $q = Todo::query()->with(['tags', 'assignee:id,name,email']);
+        $q = Todo::query()->with(['tags', 'assignee:id,name,email', 'creator:id,name,email']);
         $this->applyFilters($q, $filters, true);
         return $q->latest()->paginate($perPage);
     }
@@ -58,4 +58,3 @@ class EloquentTodoRepository implements TodoRepositoryInterface
         }
     }
 }
-

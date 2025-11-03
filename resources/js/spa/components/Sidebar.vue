@@ -8,9 +8,12 @@
     class="!bg-flexvpadrao-500 dark:!bg-flexvpadrao-vuetify-dark border-2  border-red-700"
   >
     <div class="px-1 py-4">
+      <div class="flex items-center justify-center mb-3">
+        <img src="/images/flexv-logo.svg" alt="FlexV" class="h-8 ml-3" />
+      </div>
       <div class="flex items-center gap-3 mb-4">
         <v-avatar size="40">
-          <img v-if="user.avatar" :src="user.avatar" alt="avatar" />
+          <img v-if="user.avatar_url" :src="user.avatar_url" alt="avatar" />
           <div v-else class="w-full h-full flex items-center justify-center bg-flexv-300 text-white font-semibold rounded-full">
             {{ initials }}
           </div>

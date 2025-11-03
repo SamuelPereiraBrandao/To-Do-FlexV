@@ -1,6 +1,9 @@
 <template>
   <v-container class="d-flex justify-center items-center min-h-screen">
     <div class="bg-flexvpadrao-neutra1 dark:bg-flexvpadrao-vuetify-dark/50 rounded-lg p-6 w-full max-w-md shadow-flexv transition-colors duration-300">
+      <div class="flex justify-center mb-4">
+        <img src="/images/flexv-logo.svg" alt="FlexV" class="h-10" />
+      </div>
       <v-card-title class="text-center text-flexv-100 text-2xl dark:text-flexv-500 mb-6">
         <p class="font-semibold">{{ isRegister ? 'Criar Conta' : 'Entrar' }}</p>
       </v-card-title>
@@ -87,4 +90,3 @@ function toggleMode() {
   error.value = ''
 }
 </script>
-

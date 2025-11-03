@@ -26,7 +26,10 @@ class EloquentUserRepository implements UserRepositoryInterface
         $owned = Todo::where('user_id', $user->id)->with(['tags','assignee:id,name,email'])->latest()->get();
         $assigned = Todo::where('assignee_id', $user->id)->with(['tags','assignee:id,name,email'])->latest()->get();
         return [
-            'user' => $user->only(['id','name','email']) + ['role' => $user->role ?? 'user'],
+            'user' => $user->only(['id','name','email']) + [
+                'role' => $user->role ?? 'user',
+                'avatar_url' => $user->avatar_path ? url('storage/' . $user->avatar_path) : null,
+            ],
             'owned' => $owned,
             'assigned' => $assigned,
         ];
@@ -39,4 +42,3 @@ class EloquentUserRepository implements UserRepositoryInterface
         return $user;
     }
 }
-

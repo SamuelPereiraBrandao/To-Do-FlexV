@@ -11,12 +11,17 @@ onMounted(() => {
   const current = JSON.parse(localStorage.getItem('authUser') || '{}')
   name.value = current?.name || ''
   email.value = current?.email || ''
-  avatar.value = current?.avatar || null
+  avatar.value = current?.avatar_url || null
   isAdmin.value = (current?.role || 'user') === 'admin'
 })
 
-const onFileChange = (files: File[] | undefined) => {
-  const f = files?.[0]
+const onFileChange = (val: any) => {
+  let f: File | null = null
+  if (Array.isArray(val)) {
+    f = val[0] || null
+  } else if (val && typeof val === 'object') {
+    f = val as File
+  }
   if (!f) return
   file.value = f
   const reader = new FileReader()
@@ -26,8 +31,16 @@ const onFileChange = (files: File[] | undefined) => {
   reader.readAsDataURL(f)
 }
 
-const removeAvatar = () => {
+const removeAvatar = async () => {
+  try {
+    const base = apiBase()
+    await fetch(`${base}/api/profile/avatar`, { method: 'DELETE', headers: { Accept: 'application/json', ...authHeaders() } })
+  } catch {}
+  const current = JSON.parse(localStorage.getItem('authUser') || '{}')
+  const updated = { ...current, avatar_url: null }
+  localStorage.setItem('authUser', JSON.stringify(updated))
   avatar.value = null
+  window.dispatchEvent(new CustomEvent('auth-changed'))
 }
 
 const apiBase = () => String((import.meta as any).env?.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
@@ -45,13 +58,22 @@ const save = async () => {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json', ...authHeaders() },
       body: JSON.stringify({ name: name.value, email: email.value })
     })
+    if (file.value) {
+      const fd = new FormData()
+      fd.append('avatar', file.value)
+      const up = await fetch(`${base}/api/profile/avatar`, { method: 'POST', headers: { Accept: 'application/json', ...authHeaders() }, body: fd })
+      const data = await up.json()
+      if (up.ok && data?.avatar_url) {
+        avatar.value = data.avatar_url
+      }
+    }
   } catch {}
 
   const updated = {
     ...current,
     name: name.value || current.name,
     email: email.value || current.email,
-    avatar: avatar.value || null,
+    avatar_url: avatar.value || null,
   }
   localStorage.setItem('authUser', JSON.stringify(updated))
   window.dispatchEvent(new CustomEvent('auth-changed'))
@@ -113,10 +135,9 @@ const toggleAdmin = async () => {
           <v-divider class="md:col-span-2 my-2" />
           <div v-if="isAdmin" class="md:col-span-2">
             <v-switch v-model="isAdmin" @change="toggleAdmin" label="Sou admin" hide-details />
-            <small class="opacity-70">Apenas administradores veem esta opÃ§Ã£o.</small>
+            <small class="opacity-70">Apenas administradores veem esta opção.</small>
           </div>
         </v-form>
       </v-card-text>
   </div>
 </template>
-

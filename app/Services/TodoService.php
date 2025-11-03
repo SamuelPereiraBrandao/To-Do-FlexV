@@ -52,14 +52,14 @@ class TodoService
                 'theme_id' => $todo->theme_id,
                 'tags' => $todo->tags()->pluck('name')->all(),
             ]);
-            return $todo->load(['tags','assignee:id,name,email']);
+            return $todo->load(['tags','assignee:id,name,email','creator:id,name,email']);
         });
     }
 
     public function show(User $user, Todo $todo): Todo
     {
         $this->authorizeView($user, $todo);
-        return $todo->load(['tags','assignee:id,name,email']);
+        return $todo->load(['tags','assignee:id,name,email','creator:id,name,email']);
     }
 
     public function update(User $user, Todo $todo, array $data): Todo

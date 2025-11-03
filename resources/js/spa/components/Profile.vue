@@ -13,10 +13,11 @@ const authHeaders = () => {
 
 onMounted(async () => {
   const me = JSON.parse(localStorage.getItem('authUser') || 'null')
-  if (!me?.id) return
+  const targetId = localStorage.getItem('profileUserId') || (me?.id ? String(me.id) : '')
+  if (!targetId) return
   try {
     const base = apiBase()
-    const res = await fetch(`${base}/api/users/${me.id}`, { headers: { Accept: 'application/json', ...authHeaders() } })
+    const res = await fetch(`${base}/api/users/${targetId}`, { headers: { Accept: 'application/json', ...authHeaders() } })
     const data = await res.json()
     user.value = data.user
     owned.value = Array.isArray(data.owned) ? data.owned : []
@@ -26,16 +27,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-4 mt-12">
     <v-card class="mb-4">
-      <v-card-title>Meu Perfil</v-card-title>
+      <v-card-title>Perfil</v-card-title>
       <v-card-text>
         <div class="flex items-center gap-4">
-          <v-avatar size="64"><div class="w-full h-full flex items-center justify-center bg-flexv-300 text-white font-semibold rounded-full">{{ (user?.name || '?').slice(0,2).toUpperCase() }}</div></v-avatar>
+          <v-avatar size="64">
+            <img v-if="user?.avatar_url" :src="user.avatar_url" alt="avatar" />
+            <div v-else class="w-full h-full flex items-center justify-center bg-flexv-300 text-white font-semibold rounded-full">
+              {{ (user?.name || '?').slice(0,2).toUpperCase() }}
+            </div>
+          </v-avatar>
           <div>
             <div class="font-semibold">{{ user?.name }}</div>
             <div class="opacity-70">{{ user?.email }}</div>
-            <div class="opacity-70 text-sm">Role: {{ user?.role }}</div>
+            <div class="opacity-70 text-sm">Função: {{ user?.role }}</div>
           </div>
         </div>
       </v-card-text>
