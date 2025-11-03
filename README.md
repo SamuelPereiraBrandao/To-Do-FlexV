@@ -1,122 +1,143 @@
-# 🧠 To-Do-FlexV
+To‑Do FlexV (Vue 3 + Vuetify 3 + Tailwind v4 + Laravel 12)
 
-Aplicação **Full-Stack** desenvolvida com **Laravel + Vue 3 (Composition API)**.  
-O objetivo do projeto é oferecer uma experiência moderna e funcional para gestão de tarefas (To-Do), com autenticação, dashboard e páginas de configuração centralizadas.
+Aplicação de tarefas (To‑Do) com tema claro/escuro, layout com sidebar expansível e integração completa com API Laravel (autenticação com Sanctum, perfil/avatar e CRUD de tarefas).
 
----
+Visão Geral
+- SPA em Vue 3 (rodando dentro do Laravel via Vite)
+- UI com Vuetify 3 + utilitários do Tailwind CSS v4 (sem preflight)
+- Tema dark/light sincronizado (Tailwind 'dark:' + Vuetify theme)
+- Autenticação com Laravel Sanctum (tokens pessoais)
+- Endpoints REST: login, register, perfil, avatar, tarefas (CRUD)
+- Sidebar “rail” que expande no hover; conteúdo ocupa 100% a partir da barra
 
-## 🚀 Tecnologias Utilizadas
+Tecnologias
+- Frontend
+  - Vue 3 + Vite
+  - Vuetify 3 (vite-plugin-vuetify)
+  - Tailwind CSS v4 (apenas 'theme' e 'utilities')
+  - Axios, @mdi/font
+- Backend
+  - Laravel 12
+  - Laravel Sanctum (tokens)
+  - Fortify (presente no boilerplate)
+  - SQLite por padrão (ou outro driver conforme seu '.env')
 
-### 🔧 Back-End
-- **Laravel 12**
-- **Sanctum** — autenticação SPA via tokens
-- **MySQL** — banco de dados relacional
-- **Eloquent ORM**
-- **API RESTful** com rotas versionadas
+Estrutura Importante
+- SPA (Vue):
+  - resources/js/spa/main.ts (entry)
+  - resources/js/spa/App.vue
+  - resources/js/spa/components/* (Login, AuthLayout, Sidebar, Dashboard, TodoThematic, etc.)
+  - CSS: resources/css/style.css (Tailwind v4 + tema “flexv”)
+  - Blade SPA host: resources/views/app.blade.php
+- API (Laravel):
+  - Rotas: routes/api.php
+  - Login/Registro/Logout/Perfil: app/Http/Controllers/Api/AuthController.php
+  - Tarefas (CRUD): app/Http/Controllers/Api/TodoController.php (se aplicável)
+  - Modelos: app/Models/User.php (com Sanctum), app/Models/Todo.php
+  - Migrações:
+    - database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+    - Outras: criação de 'todos', 'avatar_path' em 'users', etc.
 
-### 🎨 Front-End
-- **Vue 3 (Composition API)**
-- **Vuetify** — componentes de UI modernos
-- **Tailwind CSS** — estilização rápida e responsiva
-- **Axios** — comunicação com a API
-- **Vite** — build e hot-reload
-- **Pinia (opcional)** — gerenciamento de estado
+Pré‑requisitos
+- Node.js ≥ 18
+- PHP ≥ 8.2
+- Composer
+- SQLite ou outro banco configurado no '.env'
 
----
-
-## 📁 Estrutura do Projeto
-
-O projeto foi **unificado** (front e back no mesmo repositório) para simplificar o fluxo de desenvolvimento:
-
-/app → Código backend (Laravel)
-/bootstrap
-/config
-/public
-/resources → Vue, componentes, views e assets do front-end
-/routes → Definições de rotas Laravel
-/database
-
-yaml
-Copiar código
-
----
-
-## ⚙️ Funcionalidades
-
-- ✅ CRUD de tarefas (To-Do)
-- 🔐 Autenticação completa (login com Laravel Sanctum)
-- 🧭 Dashboard interativo com status e resumo
-- ⚙️ Páginas de configuração de usuário
-- 💅 Interface moderna e responsiva com Vuetify + Tailwind
-- 📦 Estrutura única (Laravel + Vue integrados)
-
----
-
-## 🧰 Como Rodar o Projeto
-
-### 1. Clonar o repositório
-```bash
-git clone https://github.com/SamuelPereiraBrandao/To-Do-FlexV.git
-cd To-Do-FlexV
-2. Instalar dependências do Laravel
-bash
-Copiar código
+Configuração & Execução (Desenvolvimento)
+1) Instale dependências PHP e JS
+```
 composer install
-cp .env.example .env
-php artisan key:generate
-3. Configurar o banco de dados
-No arquivo .env, defina suas credenciais:
-
-ini
-Copiar código
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=todo_flexv
-DB_USERNAME=root
-DB_PASSWORD=senha
-Depois rode:
-
-bash
-Copiar código
-php artisan migrate
-4. Instalar dependências do Vue/Vite
-bash
-Copiar código
 npm install
-5. Rodar o projeto
-Inicie o servidor Laravel e o front-end:
-
-bash
-Copiar código
-php artisan serve
+```
+2) Configure o ambiente Laravel
+```
+cp .env.example .env   # se necessário
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+```
+3) Rode os servidores (dois terminais)
+```
+# Terminal A (Vite)
 npm run dev
-Acesse:
-👉 http://localhost:8000
 
-🧑‍💻 Desenvolvimento
-Estrutura limpa e modular
+# Terminal B (Laravel)
+php artisan serve   # http://127.0.0.1:8000
+```
+4) Acesse o app em http://127.0.0.1:8000
 
-Componentes reutilizáveis com Composition API
+Opcional (host da API no front)
+- O SPA usa VITE_API_URL (padrão http://127.0.0.1:8000). Para alterar:
+```
+# .env do Vite (ou .env na raiz conforme setup)
+VITE_API_URL=http://localhost:8000
+```
 
-API organizada em controllers e resources
+Build de Produção
+```
+npm run build
+# Sirva via Laravel (manifest gerado em public/build)
+```
+Se ver “Unable to locate file in Vite manifest…”, rode 'npm run build' (ou 'npm run dev') e limpe caches:
+```
+php artisan optimize:clear
+```
 
-Código padronizado conforme Clean Code e SOLID
+Autenticação (Sanctum)
+- Login: POST /api/login → { token, user }
+- Registro: POST /api/register → { token, user }
+- Logout: POST /api/logout (Bearer)
+- Me: GET /api/me (Bearer)
 
-🧩 Próximos Passos
-📱 Implementar design responsivo completo
+Exemplos (curl)
+```
+# Registro
+curl -X POST http://127.0.0.1:8000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Samuel","email":"samuel@example.com","password":"123456","device_name":"web"}'
 
-🗓️ Adicionar filtros e categorias nas tarefas
+# Login
+curl -X POST http://127.0.0.1:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"samuel@example.com","password":"123456","device_name":"web"}'
 
-🔔 Criar sistema de notificações
+# Me
+curl -H "Authorization: Bearer <TOKEN>" http://127.0.0.1:8000/api/me
+```
 
-👥 Permitir múltiplos usuários e permissões
+Tarefas (To‑Do)
+- Listar: GET /api/todos (Bearer)
+- Criar: POST /api/todos (JSON ou multipart se houver arquivo)
+- Detalhar: GET /api/todos/{id}
+- Atualizar: PUT /api/todos/{id} (JSON ou multipart)
+- Remover: DELETE /api/todos/{id}
 
-🧾 Licença
-Este projeto está sob a licença MIT — sinta-se à vontade para utilizar e contribuir.
-Desenvolvido por Samuel Pereira Brandão 🧑‍💻
+Payload de criação (JSON)
+```
+{
+  "title": "Comprar café",
+  "theme_id": "personal",
+  "done": false
+}
+```
 
-💬 Contato
-📧 Email: samuelpbrandao58@gmail.com
-💼 LinkedIn: linkedin.com/in/samuelpereirabrandao
-🐙 GitHub: github.com/SamuelPereiraBrandao
+Tema Dark/Light
+- Classe html.dark é aplicada antes do Vue montar (script no Blade), lida pelo Tailwind v4 via '@custom-variant dark'.
+- O componente DarkModeToggle sincroniza documentElement.classList e o tema global do Vuetify.
+- Preferência é persistida em localStorage ('darkMode').
+
+Dicas & Troubleshooting
+- 404/rota API não encontrada: verifique bootstrap/app.php (com 'api: __DIR__/../routes/api.php') e reinicie 'php artisan serve'.
+- CORS: habilitado globalmente (HandleCors).
+- “These credentials do not match our records”: senha precisa estar hasheada (use o endpoint de '/api/register' ou crie usuário com Hash::make).
+- “Vite manifest not found”: rode 'npm run dev' ou 'npm run build' e 'php artisan optimize:clear'.
+
+Scripts úteis
+- npm run dev — Vite em modo dev
+- npm run build — build de produção
+- php artisan serve — servidor Laravel
+- php artisan migrate — migrações do banco
+
+Licença
+Projeto de exemplo para estudo/uso interno.
