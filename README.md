@@ -32,6 +32,15 @@ Front-end e back-end integrados em um único projeto.
 
 ---
 
+## 📘 Documentação da API
+
+A API do **To-Do FlexV** está documentada no Postman.  
+Você pode visualizar e testar todos os endpoints diretamente no link abaixo:
+
+👉 [Documentação da API (Postman)](https://documenter.getpostman.com/view/32790910/2sB3WpSMJQ)
+
+---
+
 ## 🧰 Instalação
 
 ```bash
@@ -39,11 +48,11 @@ Front-end e back-end integrados em um único projeto.
 git clone https://github.com/SamuelPereiraBrandao/To-Do-FlexV.git
 cd To-Do-FlexV
 
-# Dependências
+# Instalar dependências
 composer install
 npm install
 
-# Configuração Laravel
+# Configurar ambiente Laravel
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
